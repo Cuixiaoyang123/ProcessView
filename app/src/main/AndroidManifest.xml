@@ -18,9 +18,6 @@
         </activity>
         <activity android:name=".ProcessBoxActivity"/>
         <activity android:name=".ProcessDirectionLineActivity"/>
-        <activity android:name=".DemoActivity"></activity>
-        <activity android:name=".DemoTwoActivity"></activity>
-        <activity android:name=".DemoThreeActivity"></activity>
     </application>
 
 </manifest>
