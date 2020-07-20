@@ -4,6 +4,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -34,10 +39,11 @@ public class ProcessLayout extends RelativeLayout {
     private Context context;
     public ArrayList<ProcessBox> boxList;
     public ArrayList<ProcessDirectionLine> lineList;
+    private Paint linePaint;
     private ProcessBox downBox, upBox;
-    private float fromPointX, fromPointY;
+    private float fromPointX, fromPointY, toPointX, toPointY;
     private static final int ACCURACY_RECOGNIZE = 60;  //手指的识别精度
-    private boolean showPopup = false;
+    private int type;
 
     /* 图片控制点
      * 0---1---2
@@ -49,6 +55,8 @@ public class ProcessLayout extends RelativeLayout {
     public static final int CTR_NONE = -1;
     public static final int CTR_RIGHT_MID = 3;
     public static final int CTR_LEFT_MID = 7;
+    public static final int TYPE_NONE = 0;
+    public static final int TYPE_DRAW_LINE = 1;
 
 
     public ProcessLayout(@NonNull Context context) {
@@ -79,6 +87,16 @@ public class ProcessLayout extends RelativeLayout {
     private void init() {
         boxList = new ArrayList<>();
         lineList = new ArrayList<>();
+
+        type = TYPE_NONE;
+
+        linePaint = new Paint();//绘制实线的Paint
+        linePaint.setStyle(Paint.Style.STROKE);
+        linePaint.setStrokeCap(Paint.Cap.SQUARE);
+        linePaint.setColor(Color.GRAY);
+        linePaint.setAntiAlias(true);
+        linePaint.setStrokeWidth(5);
+        linePaint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
     }
 
 
@@ -115,6 +133,18 @@ public class ProcessLayout extends RelativeLayout {
     }
 
     @Override
+    protected void onDraw(Canvas canvas) {
+        switch (type) {
+            case TYPE_NONE:
+                break;
+            case TYPE_DRAW_LINE:
+                drawTria(fromPointX, fromPointY, toPointX, toPointY, 50, 30, canvas);
+            default:
+                break;
+        }
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         int evX = (int)event.getX();
         int evY = (int)event.getY();
@@ -122,17 +152,30 @@ public class ProcessLayout extends RelativeLayout {
         switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 if (isOnCP(evX, evY)[0] == CTR_RIGHT_MID) {
-                    Log.d(TAG, "onTouchEvent: 引线起点("+evX+","+evY+")");
+                    type = TYPE_DRAW_LINE;
+                    Log.d(TAG, "onTouchEvent: 引线起点(" + evX + "," + evY + ")");
                     downBox = boxList.get(isOnCP(evX, evY)[1]);
                     fromPointX = isOnCP(evX, evY)[2];
                     fromPointY = isOnCP(evX, evY)[3];
+                    toPointX = fromPointX;
+                    toPointY = fromPointY;
+                } else {
+                    type = TYPE_NONE;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (type == TYPE_DRAW_LINE) {
+                    toPointX = evX;
+                    toPointY = evY;
+                    invalidate();
+                }
 //                Log.d(TAG, "onTouchEvent: 引线中间点("+evX+","+evY+")");
                 break;
             case MotionEvent.ACTION_UP:
+                type = TYPE_NONE;
+                invalidate();
                 if (isOnCP(evX, evY)[0] == CTR_LEFT_MID) {
+
                     Log.d(TAG, "onTouchEvent: 引线终点(" + evX + "," + evY + ")");
                     ArrayList lineList = downBox.nextLine;  //方框的连线数量
                     if (lineList.size() < 2) { //一个方框的连线至多有两个
@@ -201,53 +244,6 @@ public class ProcessLayout extends RelativeLayout {
                                     }
                                 });
                                 builder.show();
-//                                Dialog dialog = new Dialog(context);
-//                                dialog.show();
-//                                if (showPopup) {
-//                                    return;
-//                                }
-//                                showPopup = true;
-//                                final LinearLayout linearLayout = new LinearLayout(context);
-//                                linearLayout.setBackgroundColor(getResources().getColor(R.color.gray_color_70));
-//                                linearLayout.setAlpha(0.5f);
-//                                linearLayout.setOrientation(LinearLayout.VERTICAL);
-//                                LayoutParams fuLayoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-//                                fuLayoutParams.addRule(CENTER_IN_PARENT);
-//                                linearLayout.setLayoutParams(fuLayoutParams);
-//
-//                                final EditText editText = new EditText(context);
-//                                editText.setId(R.id.line_edit_text);
-//                                editText.setText("更改线段标题");
-//                                LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-//                                layoutParams.addRule( CENTER_HORIZONTAL);
-//                                editText.setLayoutParams(layoutParams);
-//
-//                                Button button1 = new Button(context);
-//                                button1.setText("确认");
-//                                button1.setOnClickListener(new OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        showPopup = false;
-//                                        EditText editText1 = findViewById(R.id.line_edit_text);
-//                                        String text = String.valueOf(editText1.getText());
-//                                        line.changeTitle(text);
-//                                        removeView(linearLayout);
-//                                    }
-//                                });
-//
-//                                Button button2 = new Button(context);
-//                                button2.setText("取消");
-//                                button2.setOnClickListener(new OnClickListener() {
-//                                    @Override
-//                                    public void onClick(View v) {
-//                                        showPopup = false;
-//                                        removeView(linearLayout);
-//                                    }
-//                                });
-//                                linearLayout.addView(editText);
-//                                linearLayout.addView(button1);
-//                                linearLayout.addView(button2);
-//                                addView(linearLayout);
                             }
                         });
                         line.setNextBox(boxList.get(isOnCP(evX, evY)[1]));
@@ -263,9 +259,46 @@ public class ProcessLayout extends RelativeLayout {
                 break;
 
             default:
+                type = TYPE_NONE;
                 break;
         }
         return true;
+    }
+
+    /**
+     * 绘制带箭头的折线
+     */
+    protected void drawTria(float fromX, float fromY, float toX, float toY, int heigth, int bottom, Canvas canvas) {
+        // heigth和bottom分别为三角形的高与底的一半,调节三角形大小
+        float maxHeight = Math.abs( toX - fromX ) - 5;
+        if ( heigth > maxHeight ) { //适配箭头长度超出线段长度的情况
+            bottom = (int) ( bottom * maxHeight / heigth );
+            heigth = (int) maxHeight;
+        }
+        //自动折中取折线 如下方式：
+        //   o-----|
+        //         |
+        //         |----->
+        canvas.drawLine(fromX, fromY, toX, toY, linePaint);
+        float juli = (float) Math.sqrt((toX - fromX) * (toX - fromX)
+                + (toY - fromY) * (toY - fromY));// 获取线段距离
+        float juliX = toX - fromX;// 有正负，不要取绝对值
+        float juliY = toY - fromY;// 有正负，不要取绝对值
+        float dianX = toX - (heigth / juli * juliX);
+        float dianY = toY - (heigth / juli * juliY);
+        //终点的箭头
+        Path path = new Path();
+        path.moveTo(toX, toY);// 此点为三边形的起点
+        path.lineTo(dianX + (bottom / juli * juliY), dianY
+                - (bottom / juli * juliX));
+        path.moveTo(toX, toY);// 此点为三边形的起点
+        path.lineTo(dianX - (bottom / juli * juliY), dianY
+                + (bottom / juli * juliX));
+//        path.lineTo(dianX - (bottom / juli * juliY), dianY
+//                + (bottom / juli * juliX));
+//        path.close(); // 使这些点构成封闭的三边形
+        canvas.drawPath(path, linePaint);
+
     }
 
     public void addBox(final Context context) {
