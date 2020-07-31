@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(this, ProcessBoxActivity.class));
                 break;
             case R.id.btn_demo_two:
-                startActivity(new Intent(this, ProcessDirectionLineActivity.class));
+//                startActivity(new Intent(this, ProcessDirectionLineActivity.class));
                 break;
 //            case R.id.btn_demo_three:
 //                startActivity(new Intent(this, DemoThreeActivity.class));

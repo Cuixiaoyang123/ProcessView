@@ -15,6 +15,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -26,9 +28,9 @@ import java.util.Arrays;
  * Description: 使用矩阵控制图片移动、缩放、旋转
  */
 
-public class ProcessBox extends View {
+public class ProcessBox extends View implements ViewNode{
     public interface BoxCallBack {
-        public void onClickBoxTL();
+        public void onClickBoxTL(ProcessBox box);
     }
     BoxCallBack boxCallBack = null;
 
@@ -44,6 +46,7 @@ public class ProcessBox extends View {
     private Matrix matrix ;
     private float[] srcPs;
     public float[] dstPs;
+    private String key;
     private String title;
     private RectF srcRect , dstRect, titleRect ;
     private Paint paint, paintRect, paintFrame, paintTitle;
@@ -90,9 +93,13 @@ public class ProcessBox extends View {
     public ArrayList<ProcessDirectionLine> nextLine;
 
     public ProcessBox(Context context){
+        this(context, 0, 0);
+    }
+
+    public ProcessBox(Context context,int x, int y){
         super(context);
         this.context = context;
-        initData();
+        initData(x,y);
     }
 
     public int getPic() {
@@ -105,6 +112,14 @@ public class ProcessBox extends View {
             mainBmp = BitmapFactory.decodeResource(this.context.getResources(),pic);
             invalidate();
         }
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 
     public String getTitle() {
@@ -124,11 +139,12 @@ public class ProcessBox extends View {
     /**
      * 初始化数据
      */
-    private void initData(){
+    private void initData(int x, int y){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             int id = generateViewId();
             setId(id);
             title = "流程框标题"+id;
+            key = "boxM" + id;
         }
         nextLine = new ArrayList<>(2);
         pic = R.drawable.background;
@@ -156,6 +172,7 @@ public class ProcessBox extends View {
         titleRect = new RectF();
 
         matrix = new Matrix();
+        matrix.postTranslate(x,y);
 
         prePivot = new Point(mainBmpWidth/2, mainBmpHeight/2);
         lastPivot = new Point(mainBmpWidth/2, mainBmpHeight/2);
@@ -203,6 +220,8 @@ public class ProcessBox extends View {
             case OPER_ROTATE:
                 matrix.postRotate(preDegree - lastDegree, dstPs[CTR_MID_MID * 2], dstPs[CTR_MID_MID * 2 + 1]);
                 break;
+            default:
+                break;
         }
 
         matrix.mapPoints(dstPs, srcPs);
@@ -229,7 +248,7 @@ public class ProcessBox extends View {
                 if(current_ctr == CTR_RIGHT_MID ){
                     curOper = OPER_LINE;
                 }else if(current_ctr == CTR_TITLE){
-                    boxCallBack.onClickBoxTL();
+                    boxCallBack.onClickBoxTL(this);
                 }else if(current_ctr != CTR_NONE || isOnPic(evX, evY)){
                     curOper = OPER_SELECTED;
                 }
@@ -370,7 +389,11 @@ public class ProcessBox extends View {
         return true;
     }
 
-
+    public void translateX(int deltaX) {
+        this.deltaX = deltaX;
+        this.deltaY = 0;
+        setMatrix(OPER_TRANSLATE);
+    }
 
     /**
      * 移动
@@ -490,9 +513,21 @@ public class ProcessBox extends View {
         return (float)(Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2)));
     }
 
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+    }
 
     @Override
     public void onDraw(Canvas canvas){
+//        if (getPaddingLeft() != 0 || getPaddingTop() != 0) {
+//            matrix.postTranslate(getPaddingLeft(), getPaddingTop());
+//        }
         drawBackground(canvas);//绘制背景和标题,以便测试矩形的映射
         canvas.drawBitmap(mainBmp, matrix, paint);//绘制主图片
 //        drawFrame(canvas);//绘制边框,以便测试点的映射

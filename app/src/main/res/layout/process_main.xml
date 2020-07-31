@@ -1,39 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.test.shundemo.ProcessLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/relative_layout"
-    android:background="@color/messure_no_color"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.example.test.shundemo.ProcessLayout
+        android:id="@+id/relative_layout"
+        android:layout_marginTop="-430dp"
+        android:layout_width="1000dp"
+        android:layout_height="1600dp"
+        android:background="@color/messure_no_color">
+
+        <!--        <TextView-->
+        <!--            android:id="@+id/out_text"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:layout_above="@+id/btn_add"-->
+        <!--            android:layout_centerHorizontal="true" />-->
+        <!--    -->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_add"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="增加节点"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_centerHorizontal="true"-->
+        <!--            />-->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_add_line"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="测试连线"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_toRightOf="@+id/btn_add"-->
+        <!--            />-->
+        <!--    -->
+        <!--        <Button-->
+        <!--            android:id="@+id/btn_export"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content"-->
+        <!--            android:text="输出节点"-->
+        <!--            android:layout_alignParentBottom="true"-->
+        <!--            android:layout_toLeftOf="@+id/btn_add"-->
+        <!--            />-->
+    </com.example.test.shundemo.ProcessLayout>
 
     <TextView
         android:id="@+id/out_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/btn_add"
-        android:layout_centerHorizontal="true" />
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="50dp"/>
 
     <Button
         android:id="@+id/btn_add"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="增加节点"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
+        android:layout_gravity="center_horizontal|bottom"
         />
     <Button
-        android:id="@+id/btn_add_line"
+        android:id="@+id/btn_scale1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="测试连线"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/btn_add"
-        />
+        android:text="恢复比例"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginLeft="90dp" />
 
     <Button
         android:id="@+id/btn_export"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="输出节点"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@+id/btn_add"
-        />
-</com.example.test.shundemo.ProcessLayout>
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginRight="90dp" />
+
+    <Button
+        android:id="@+id/btn_import"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:text="导入"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginRight="170dp" />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:max="60"
+        android:progress="50"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="60dp"/>
+
+
+
+</FrameLayout>
