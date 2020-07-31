@@ -28,7 +28,7 @@ import java.util.Arrays;
  * Description: 使用矩阵控制图片移动、缩放、旋转
  */
 
-public class ProcessBox extends View implements ViewNode{
+public class ProcessBox extends View{
     public interface BoxCallBack {
         public void onClickBoxTL(ProcessBox box);
     }

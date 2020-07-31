@@ -20,7 +20,7 @@ import android.widget.Toast;
  * Created by DreamLost on 2020/7/10 at 15:49
  * Description:
  */
-public class ProcessDirectionLine extends View implements ViewNode{
+public class ProcessDirectionLine extends View{
     public interface LineCallBack {
         public void onClickLine(ProcessDirectionLine line, float x, float y);
     }
