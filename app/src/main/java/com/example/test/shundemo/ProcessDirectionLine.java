@@ -152,9 +152,9 @@ public class ProcessDirectionLine extends View{
         linePaint = new Paint();//绘制实线的Paint
         linePaint.setStyle(Paint.Style.STROKE);
         linePaint.setStrokeCap(Paint.Cap.SQUARE);
-        linePaint.setColor(Color.parseColor("#5DA8ED"));
+        linePaint.setColor(Color.GRAY); //Color.parseColor("#5DA8ED")
         linePaint.setAntiAlias(true);
-        linePaint.setStrokeWidth(10);
+        linePaint.setStrokeWidth(7);
         linePaint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
 
         pointX = 0;

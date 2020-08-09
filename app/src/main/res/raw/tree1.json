@@ -1,0 +1,26 @@
+{
+  "head": "box1",
+  "boxes": [
+    {"key":"box1", "title":"name1", "pic":null,"url":"","x":"100","y": "1500",
+      "nextLine":["line1","line2"]},
+    {"key":"box2", "title":"name2", "pic":null,"url":"","x":"700","y": "900",
+      "nextLine":["line3","line7"]},
+    {"key":"box3", "title":"name3", "pic":null,"url":"","x":"1300","y": "1800",
+      "nextLine":["line4"]},
+    {"key":"box4", "title":"name4", "pic":null,"url":"","x":"1300","y": "1100",
+      "nextLine":["line5", "line6"]},
+    {"key":"box5", "title":"name5", "pic":null,"url":"","x":"2000","y": "900",
+      "nextLine":[]},
+    {"key":"box6", "title":"name6", "pic":null,"url":"","x":"2000","y": "1500",
+      "nextLine":[]}
+  ],
+  "lines": [
+    {"key": "line1","title": "name1","preBox": "box1","nextBox": "box2"},
+    {"key": "line2","title": "name2","preBox": "box1","nextBox": "box3"},
+    {"key": "line3","title": "name3","preBox": "box2","nextBox": "box4"},
+    {"key": "line4","title": "name4","preBox": "box3","nextBox": "box6"},
+    {"key": "line5","title": "name5","preBox": "box4","nextBox": "box5"},
+    {"key": "line6","title": "name6","preBox": "box4","nextBox": "box6"},
+    {"key": "line7","title": "name7","preBox": "box2","nextBox": "box3"}
+  ]
+}

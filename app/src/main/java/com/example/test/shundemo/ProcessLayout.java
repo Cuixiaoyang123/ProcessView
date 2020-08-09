@@ -57,6 +57,7 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
     public static final int TYPE_DRAW_LINE = 1;
     public static final int TYPE_TRANSLATE = 2;
     private Matrix matrix;
+    private String rootKey;  //根节点Box的key
 
 
     public ProcessLayout(@NonNull Context context) {
@@ -84,6 +85,13 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
         init();
     }
 
+    public String getRootKey() {
+        if (rootKey == "") {
+            rootKey = boxMap.keySet().iterator().next();
+        }
+        return rootKey;
+    }
+
     private void init() {
         boxMap = new LinkedHashMap<>();
         lineMap = new LinkedHashMap<>();
@@ -95,7 +103,7 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
         linePaint.setStrokeCap(Paint.Cap.SQUARE);
         linePaint.setColor(Color.GRAY);
         linePaint.setAntiAlias(true);
-        linePaint.setStrokeWidth(10);
+        linePaint.setStrokeWidth(7);
         linePaint.setPathEffect(new DashPathEffect(new float[]{10, 5}, 0));
     }
 
@@ -260,13 +268,18 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
         canvas.drawPath(path, linePaint);
 
     }
+    public void autoGenerateTree(ArrayList<LinkedHashMap> maps) {
+        rootKey = (String) maps.get(2).get("head");
+        autoGenerateTree(maps.get(0), maps.get(1), 0);
+
+    }
 
     public void autoGenerateTree(LinkedHashMap<String,String[]> boxs, LinkedHashMap<String,String[]> lines) {
         autoGenerateTree(boxs, lines, 0);
 
     }
 
-    public void autoGenerateTree(LinkedHashMap<String, String[]> boxs, LinkedHashMap<String, String[]> lines, int first) {
+    public void autoGenerateTree(LinkedHashMap<String, String[]> boxs, LinkedHashMap<String, String[]> lines, int head) {
         int disHeiUp = dip2px(context,150), disHeiDown = dip2px(context,150), disWid = dip2px(context,150);
         int startX = dip2px(context,20), startY = dip2px(context,700);
         Iterator<Map.Entry<String, String[]>> iterator = boxs.entrySet().iterator();
@@ -276,7 +289,11 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
             ProcessBox newBox;
             if (boxMap.get(entry.getKey()) == null) {
                 //boxMap中没有新建的这个Box 所以要New出此Box
-                newBox = new ProcessBox(context, startX, startY);
+                if (boxArray[4] != null && boxArray[5] != null) {
+                    newBox = new ProcessBox(context, Integer.valueOf(boxArray[4]) , Integer.valueOf(boxArray[5]));
+                }else {
+                    newBox = new ProcessBox(context, startX, startY);
+                }
                 newBox.setKey(boxArray[0]);
                 newBox.setTitle(boxArray[1]);
                 newBox.setOnBoxTLClick(this);
@@ -290,14 +307,18 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
             startY = (int) newBox.dstPs[1];
 
 
-            if (boxArray[3] != null) {
-                String[] next1LineArray = lines.get(boxArray[3]);
+            if (boxArray[7] != null) {
+                String[] next1LineArray = lines.get(boxArray[7]);
                 String[] next1BoxArray = boxs.get(next1LineArray[3]);
                 ProcessBox next1Box;
 
                 if (boxMap.get(next1BoxArray[0]) == null) {
                     //boxMap中没有新建的这个Box 所以要New出此Box
-                    next1Box = new ProcessBox(context, startX + disWid,  startY - disHeiUp); //  getLeft() + getTop() +
+                    if (next1BoxArray[4] != null && next1BoxArray[5] != null) {
+                        next1Box = new ProcessBox(context, Integer.valueOf(next1BoxArray[4]) , Integer.valueOf(next1BoxArray[5]));
+                    }else {
+                        next1Box = new ProcessBox(context, startX + disWid,  startY - disHeiUp);
+                    }
                     next1Box.setKey(next1BoxArray[0]);
                     next1Box.setTitle(next1BoxArray[1]);
                     next1Box.setOnBoxTLClick(this);
@@ -307,7 +328,7 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
                     //boxMap中已经存在这个Box 所以要取出此Box
                     next1Box = boxMap.get(next1BoxArray[0]);
                     //检查此box的层级是否需要变动
-                    if (startX >= next1Box.dstPs[0]) {
+                    if (next1BoxArray[4] == null && startX >= next1Box.dstPs[0]) {
                         next1Box.translateX(disWid);
                         checkLines();//更新线的位置
                     }
@@ -323,14 +344,18 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
                 lineMap.put(next1Line.getKey(), next1Line);
 
             }
-            if (boxArray[4] != null) {
-                String[] next2LineArray = lines.get(boxArray[4]);
+            if (boxArray[8] != null) {
+                String[] next2LineArray = lines.get(boxArray[8]);
                 String[] next2BoxArray = boxs.get(next2LineArray[3]);
                 ProcessBox next2Box;
 
                 if (boxMap.get(next2BoxArray[0]) == null) {
                     //boxMap中没有新建的这个Box 所以要New出此Box
-                    next2Box = new ProcessBox(context,  startX + disWid, startY + disHeiDown); // getLeft() +getTop() +
+                    if (next2BoxArray[4] != null && next2BoxArray[5] != null) {
+                        next2Box = new ProcessBox(context, Integer.valueOf(next2BoxArray[4]) , Integer.valueOf(next2BoxArray[5]));
+                    }else {
+                        next2Box = new ProcessBox(context, startX + disWid, startY + disHeiDown);
+                    }
                     next2Box.setKey(next2BoxArray[0]);
                     next2Box.setTitle(next2BoxArray[1]);
                     next2Box.setOnBoxTLClick(this);
@@ -340,7 +365,7 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
                     //boxMap中已经存在这个Box 所以要取出此Box
                     next2Box = boxMap.get(next2BoxArray[0]);
                     //检查此box的层级是否需要变动
-                    if (startX >= next2Box.dstPs[0]) {
+                    if (next2BoxArray[4] == null && startX >= next2Box.dstPs[0]) {
                         next2Box.translateX(disWid);
                         checkLines();//更新线的位置
                     }
