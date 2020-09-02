@@ -14,7 +14,7 @@ import android.view.View;
 
 /**
  * Created by DreamLost on 2020/7/31 at 11:28
- * Description:
+ * Description: 贝塞尔曲线View
  */
 public class BeiView extends View {
 
