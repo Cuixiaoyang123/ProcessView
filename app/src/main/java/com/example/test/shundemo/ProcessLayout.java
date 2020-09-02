@@ -172,8 +172,6 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
                 Log.d(TAG, "onTouchEvent: 引线中间点("+evX+","+evY+")");
 
                 }else if (type == TYPE_TRANSLATE) {
-//                    int oldScrollX = (int) getScrollX();
-//                    int oldScrollY = (int) getScrollY();
                     int oldScrollX = (int) getTranslationX();
                     int oldScrollY = (int) getTranslationY();
                     Log.d(TAG, "onTouchEvent: oldScrollX = " + oldScrollX);
@@ -181,8 +179,6 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
                     int dx = (int) (evX - fromPointX) ;
                     int dy = (int) (evY - fromPointY);
 
-//                    int dx = (int) (fromPointX - evX) / mScrollSensitivity;
-//                    int dy = (int) (fromPointY - evY) / mScrollSensitivity;
 
                     Log.d(TAG, "onTouchEvent: dX = " + dx);
                     Log.d(TAG, "onTouchEvent: dY = " + dy);
@@ -191,24 +187,6 @@ public class ProcessLayout extends RelativeLayout implements ProcessDirectionLin
                     Log.d(TAG, "onTouchEvent: scrollTo("+scrollX+","+scrollY+")");
                     setTranslationX(scrollX);
                     setTranslationY(scrollY);
-//                    scrollTo(scrollX, scrollY);
-//                    Log.d(TAG, "onTouchEvent: 拖动ViewGroup("+evX+","+evY+")"+"getTranslationX="+getTranslationX()+"getTranslationY="+getTranslationY());
-//                    if (event.getRawX() - tempPointX > 5f && getTranslationX() < dip2px(context,10f)) {
-//                        setTranslationX(getTranslationX() + 10f);
-//                    } else if (event.getRawX() - tempPointX < -5f && getTranslationX() > dip2px(context,-650f)) {
-//                        setTranslationX(getTranslationX() - 10f);
-//
-//                    }
-//                    if (event.getRawY() - tempPointY > 5f && getTranslationY() < dip2px(context,440f)) {
-//                        setTranslationY(getTranslationY() + 10f);
-//                    } else if (event.getRawY() - tempPointY < -5f && getTranslationY() > dip2px(context,-610f)) {
-//                        setTranslationY(getTranslationY() - 10f);
-//                    }
-//
-//                    tempPointX = event.getRawX();
-//                    tempPointY = event.getRawY();
-//                    if (getTranslationX() < 30f && getTranslationY() < 30f) {
-//                    }
                 }
                 break;
             case MotionEvent.ACTION_UP:
