@@ -56,4 +56,5 @@ public class TreeNode {
         nexts.add(node);
         sonNum++;
     }
+
 }
