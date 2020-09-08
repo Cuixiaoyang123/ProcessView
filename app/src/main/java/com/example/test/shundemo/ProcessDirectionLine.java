@@ -278,7 +278,7 @@ public class ProcessDirectionLine extends View{
     public boolean onTouchEvent(MotionEvent event) {
         int evX = (int)event.getX();
         int evY = (int)event.getY();
-        if (!isOnTitle(evX, evY)) {//操作不在标题上
+        if (!isOnTitle(evX, evY)) {//操作是不是标题上
             return false;
         }
         switch(event.getAction()) {
